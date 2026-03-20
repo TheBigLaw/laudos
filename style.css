@@ -1,255 +1,240 @@
 @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap');
 
 :root {
-    --teal: #1a7a8a;
-    --teal-l: #2ba3b8;
-    --teal-p: #e8f5f8;
-    --blue: #1e4f7a;
-    --text: #1a2332;
-    --muted: #5c7080;
-    --border: #d0e4ea;
-    --bg: #f5f9fa;
-    --warn: #b85c1a;
-    --ok: #2d7a4a;
+  --teal: #1a7a8a;
+  --teal-light: #2ba3b8;
+  --teal-pale: #e8f5f8;
+  --blue: #1e4f7a;
+  --blue-light: #2d6faa;
+  --text: #1a2332;
+  --muted: #5c7080;
+  --border: #d0e4ea;
+  --bg: #f5f9fa;
+  --white: #ffffff;
+  --success: #2d7a4a;
+  --warn: #b85c1a;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
-    font-family: 'DM Sans', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    min-height: 100vh;
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
 }
 
-.hdr {
-    background: linear-gradient(135deg, var(--teal), var(--blue));
-    padding: 16px 28px;
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    box-shadow: 0 4px 20px rgba(26, 122, 138, .3);
+/* ─── HEADER ─────────────────────────────── */
+header {
+  background: linear-gradient(135deg, var(--teal) 0%, var(--blue) 100%);
+  padding: 20px 32px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  box-shadow: 0 4px 20px rgba(26,122,138,0.3);
 }
-
-.hdr-ico {
-    width: 42px;
-    height: 42px;
-    background: rgba(255, 255, 255, .15);
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 22px;
+.logo-mark {
+  width: 44px; height: 44px;
+  background: rgba(255,255,255,0.15);
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px;
 }
-
-.hdr h1 {
-    font-family: 'DM Serif Display', serif;
-    color: #fff;
-    font-size: 20px;
-    font-weight: 400;
+header h1 {
+  font-family: 'DM Serif Display', serif;
+  color: white;
+  font-size: 22px;
+  font-weight: 400;
 }
+header h1 span { opacity: 0.7; font-size: 14px; display: block; font-family: 'DM Sans', sans-serif; font-weight: 300; margin-top: 1px; }
 
-.hdr h1 span {
-    opacity: .7;
-    font-size: 12px;
-    display: block;
-    font-family: 'DM Sans', sans-serif;
-    font-weight: 300;
+/* ─── LAYOUT ─────────────────────────────── */
+.container { max-width: 1100px; margin: 0 auto; padding: 32px 24px; }
+
+.steps-bar {
+  display: flex; gap: 0; margin-bottom: 32px;
+  background: white; border-radius: 14px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  overflow: hidden;
 }
-
-.wrap { max-width: 1080px; margin: 0 auto; padding: 28px 20px; }
-
-.steps {
-    display: flex;
-    background: #fff;
-    border-radius: 14px;
-    box-shadow: 0 2px 12px rgba(0,0,0,.06);
-    overflow: hidden;
-    margin-bottom: 28px;
-}
-
 .step {
-    flex: 1;
-    padding: 12px 6px;
-    text-align: center;
-    font-size: 11px;
-    font-weight: 500;
-    color: var(--muted);
-    border-right: 1px solid var(--border);
-    cursor: pointer;
-    transition: all .2s;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 3px;
+  flex: 1; padding: 14px 8px; text-align: center;
+  font-size: 12px; font-weight: 500; color: var(--muted);
+  border-right: 1px solid var(--border); cursor: pointer;
+  transition: all 0.2s; position: relative;
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
 }
-
 .step:last-child { border-right: none; }
-.step .num {
-    width: 22px;
-    height: 22px;
-    border-radius: 50%;
-    background: var(--border);
-    color: var(--muted);
-    font-size: 10px;
-    font-weight: 700;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+.step .step-num {
+  width: 24px; height: 24px; border-radius: 50%;
+  background: var(--border); color: var(--muted);
+  font-size: 11px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
 }
+.step.active { color: var(--teal); background: var(--teal-pale); }
+.step.active .step-num { background: var(--teal); color: white; }
+.step.done { color: var(--success); }
+.step.done .step-num { background: var(--success); color: white; }
 
-.step.active { color: var(--teal); background: var(--teal-p); }
-.step.active .num { background: var(--teal); color: #fff; }
-.step.done { color: var(--ok); }
-.step.done .num { background: var(--ok); color: #fff; }
-
+/* ─── CARDS ─────────────────────────────── */
 .card {
-    background: #fff;
-    border-radius: 16px;
-    box-shadow: 0 2px 16px rgba(0,0,0,.06);
-    padding: 26px;
-    margin-bottom: 18px;
+  background: white; border-radius: 16px;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.06);
+  padding: 28px; margin-bottom: 20px;
 }
-
-.ch {
-    display: flex;
-    align-items: center;
-    gap: 11px;
-    margin-bottom: 20px;
-    padding-bottom: 14px;
-    border-bottom: 2px solid var(--teal-p);
+.card-header {
+  display: flex; align-items: center; gap: 12px;
+  margin-bottom: 22px; padding-bottom: 16px;
+  border-bottom: 2px solid var(--teal-pale);
 }
-
-.ch-ico {
-    width: 36px;
-    height: 36px;
-    border-radius: 10px;
-    background: var(--teal-p);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 17px;
+.card-icon {
+  width: 38px; height: 38px; border-radius: 10px;
+  background: var(--teal-pale); display: flex;
+  align-items: center; justify-content: center; font-size: 18px;
 }
+.card-title { font-family: 'DM Serif Display', serif; font-size: 18px; color: var(--blue); }
+.card-sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
 
-.ch-t { font-family: 'DM Serif Display', serif; font-size: 17px; color: var(--blue); }
-.ch-s { font-size: 11px; color: var(--muted); }
+/* ─── FORM FIELDS ─────────────────────────── */
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+.grid-4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 14px; }
 
-.g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-
-.fld { display: flex; flex-direction: column; gap: 4px; }
-.fld label {
-    font-size: 10px;
-    font-weight: 700;
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: .6px;
+.field { display: flex; flex-direction: column; gap: 5px; }
+.field label { font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.6px; }
+.field input, .field select, .field textarea {
+  border: 1.5px solid var(--border); border-radius: 8px;
+  padding: 9px 12px; font-size: 14px; font-family: 'DM Sans', sans-serif;
+  color: var(--text); background: var(--bg);
+  transition: border-color 0.2s, box-shadow 0.2s;
+  outline: none;
 }
-
-.fld input, .fld select, .fld textarea {
-    border: 1.5px solid var(--border);
-    border-radius: 8px;
-    padding: 8px 11px;
-    font-size: 13px;
-    font-family: 'DM Sans', sans-serif;
-    color: var(--text);
-    background: var(--bg);
-    outline: none;
-    transition: border-color .2s, box-shadow .2s;
-    width: 100%;
+.field input:focus, .field select:focus, .field textarea:focus {
+  border-color: var(--teal); box-shadow: 0 0 0 3px rgba(26,122,138,0.1);
+  background: white;
 }
+.field textarea { resize: vertical; min-height: 80px; }
 
-.fld input:focus, .fld select:focus, .fld textarea:focus {
-    border-color: var(--teal);
-    box-shadow: 0 0 0 3px rgba(26, 122, 138, .1);
-    background: #fff;
+/* ─── TEST SECTIONS ─────────────────────────── */
+.test-section { margin-bottom: 24px; }
+.test-header {
+  display: flex; align-items: center; justify-content: space-between;
+  background: var(--teal-pale); border-radius: 10px;
+  padding: 10px 14px; margin-bottom: 14px; cursor: pointer;
+  border: 1.5px solid transparent; transition: border-color 0.2s;
 }
-
-.ic {
-    display: flex;
-    align-items: center;
-    gap: 7px;
-    padding: 5px 7px;
-    border-radius: 7px;
-    cursor: pointer;
-    font-size: 12px;
-    color: var(--text);
-    transition: background .15s;
+.test-header:hover { border-color: var(--teal-light); }
+.test-header-left { display: flex; align-items: center; gap: 10px; }
+.test-badge {
+  background: var(--teal); color: white;
+  font-size: 10px; font-weight: 700; padding: 3px 8px;
+  border-radius: 20px; text-transform: uppercase; letter-spacing: 0.5px;
 }
+.test-name { font-weight: 600; font-size: 14px; color: var(--blue); }
+.test-desc { font-size: 12px; color: var(--muted); }
+.toggle-icon { font-size: 18px; color: var(--teal); transition: transform 0.2s; }
+.test-body { display: none; padding: 4px 2px; }
+.test-body.open { display: block; }
 
-.ic:hover { background: var(--teal-p); }
-.ic input { accent-color: var(--teal); width: 14px; height: 14px; }
-
-.grp-lbl {
-    font-size: 11px;
-    font-weight: 700;
-    color: var(--muted);
-    text-transform: uppercase;
-    margin: 14px 0 7px;
+/* ─── SCORE INPUTS ─────────────────────────── */
+.score-row {
+  display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 10px;
+  align-items: center; padding: 8px 0;
+  border-bottom: 1px solid var(--teal-pale);
 }
-
-.sc-row {
-    display: grid;
-    grid-template-columns: 2fr 1fr 1fr 1fr;
-    gap: 8px;
-    align-items: center;
-    padding: 7px 0;
-    border-bottom: 1px solid var(--teal-p);
+.score-row:last-child { border-bottom: none; }
+.score-label { font-size: 13px; color: var(--text); font-weight: 500; }
+.score-input {
+  border: 1.5px solid var(--border); border-radius: 6px;
+  padding: 6px 10px; font-size: 13px; text-align: center;
+  font-family: 'DM Sans', sans-serif; color: var(--text);
+  background: var(--bg); outline: none; width: 100%;
+  transition: border-color 0.2s;
 }
+.score-input:focus { border-color: var(--teal); background: white; }
+.score-head { font-size: 11px; font-weight: 700; color: var(--muted); text-align: center; text-transform: uppercase; }
 
-.sc-inp {
-    border: 1.5px solid var(--border);
-    border-radius: 6px;
-    padding: 5px 8px;
-    font-size: 12px;
-    text-align: center;
-    width: 100%;
+/* ─── BUTTONS ─────────────────────────────── */
+.btn-primary {
+  background: linear-gradient(135deg, var(--teal) 0%, var(--blue) 100%);
+  color: white; border: none; border-radius: 10px;
+  padding: 13px 28px; font-size: 15px; font-weight: 600;
+  font-family: 'DM Sans', sans-serif; cursor: pointer;
+  box-shadow: 0 4px 15px rgba(26,122,138,0.35);
+  transition: transform 0.15s, box-shadow 0.15s;
+  display: inline-flex; align-items: center; gap: 8px;
 }
-
-.btn-p {
-    background: linear-gradient(135deg, var(--teal), var(--blue));
-    color: #fff;
-    border: none;
-    border-radius: 10px;
-    padding: 12px 26px;
-    font-weight: 600;
-    cursor: pointer;
+.btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(26,122,138,0.4); }
+.btn-primary:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+.btn-secondary {
+  background: white; color: var(--teal);
+  border: 1.5px solid var(--teal); border-radius: 10px;
+  padding: 11px 22px; font-size: 14px; font-weight: 600;
+  font-family: 'DM Sans', sans-serif; cursor: pointer;
+  transition: background 0.15s;
 }
+.btn-secondary:hover { background: var(--teal-pale); }
 
-.btn-s {
-    background: #fff;
-    color: var(--teal);
-    border: 1.5px solid var(--teal);
-    border-radius: 10px;
-    padding: 10px 20px;
-    font-weight: 600;
-    cursor: pointer;
-}
+.actions { display: flex; gap: 12px; justify-content: flex-end; margin-top: 24px; flex-wrap: wrap; }
 
-.out {
-    background: #fff;
-    border-radius: 16px;
-    padding: 36px;
-    font-size: 14px;
-    line-height: 1.85;
-    white-space: pre-wrap;
-}
-
-.hidden { display: none; }
+/* ─── PHASE PANELS ─────────────────────────── */
 .phase { display: none; }
 .phase.active { display: block; }
 
-.key-box {
-    background: var(--teal-p);
-    border: 1.5px solid var(--teal);
-    border-radius: 12px;
-    padding: 18px 20px;
-    margin-bottom: 20px;
-    display: flex;
-    align-items: center;
-    gap: 14px;
+/* ─── OUTPUT ─────────────────────────────── */
+#laudo-output {
+  background: white; border-radius: 16px;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.06);
+  padding: 40px; margin-top: 20px;
+  font-size: 14px; line-height: 1.8; color: var(--text);
+  white-space: pre-wrap; font-family: 'DM Sans', sans-serif;
+  min-height: 200px; position: relative;
+}
+#laudo-output.loading {
+  display: flex; align-items: center; justify-content: center;
+  color: var(--muted); font-style: italic;
 }
 
-@media(max-width: 640px) {
-    .g2 { grid-template-columns: 1fr; }
-    .sc-row { grid-template-columns: 1fr 1fr 1fr; }
+.spinner {
+  width: 36px; height: 36px; border: 3px solid var(--teal-pale);
+  border-top-color: var(--teal); border-radius: 50%;
+  animation: spin 0.8s linear infinite; margin-right: 12px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.output-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 20px; flex-wrap: wrap; gap: 12px;
+}
+
+/* ─── MISC ─────────────────────────────── */
+.info-chip {
+  background: var(--teal-pale); color: var(--teal);
+  font-size: 11px; font-weight: 600; padding: 4px 10px;
+  border-radius: 20px; display: inline-flex; align-items: center; gap: 5px;
+}
+.section-divider {
+  border: none; border-top: 2px solid var(--teal-pale); margin: 24px 0;
+}
+.obs-note {
+  background: #fff8e8; border-left: 3px solid #e0a020;
+  padding: 10px 14px; border-radius: 0 8px 8px 0;
+  font-size: 13px; color: #7a5500; margin-top: 12px;
+}
+
+/* ─── INSTR CHECKBOXES (Do 2º bloco style) ─── */
+.instr-check {
+  display: flex; align-items: center; gap: 8px;
+  padding: 6px 8px; border-radius: 7px; cursor: pointer;
+  font-size: 13px; color: var(--text); margin-bottom: 4px;
+  transition: background 0.15s;
+}
+.instr-check:hover { background: var(--teal-pale); }
+.instr-check input[type=checkbox] { accent-color: var(--teal); width: 15px; height: 15px; }
+
+@media (max-width: 680px) {
+  .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+  .score-row { grid-template-columns: 1fr 1fr 1fr; }
+  .score-row .score-label { grid-column: 1/-1; }
+  header h1 { font-size: 18px; }
 }
