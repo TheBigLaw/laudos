@@ -1,167 +1,309 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Equilibrium — Laudos Neuropsicológicos</title>
-    <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Equilibrium — Gerador de Laudos Neuropsicológicos</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<div class="hdr">
-    <div class="hdr-ico">⚕️</div>
-    <h1>Equilibrium Med Center <span>Gerador de Laudos Neuropsicológicos · IA Clínica</span></h1>
-</div>
+<header>
+  <div class="logo-mark">⚕️</div>
+  <h1>Equilibrium Med Center
+    <span>Gerador de Laudos Neuropsicológicos · IA Clínica</span>
+  </h1>
+</header>
 
-<div class="wrap">
+<div class="container">
 
-    <div class="steps" id="steps-bar">
-        <div class="step active" data-step="1" onclick="goStep(1)"><div class="num">1</div>Identificação</div>
-        <div class="step" data-step="2" onclick="goStep(2)"><div class="num">2</div>Anamnese</div>
-        <div class="step" data-step="3" onclick="goStep(3)"><div class="num">3</div>Instrumentos</div>
-        <div class="step" data-step="4" onclick="goStep(4)"><div class="num">4</div>Escores</div>
-        <div class="step" data-step="5" onclick="goStep(5)"><div class="num">5</div>Gerar Laudo</div>
+  <div class="steps-bar">
+    <div class="step active" onclick="goStep(1)" id="step1">
+      <div class="step-num">1</div>Identificação
+    </div>
+    <div class="step" onclick="goStep(2)" id="step2">
+      <div class="step-num">2</div>Anamnese
+    </div>
+    <div class="step" onclick="goStep(3)" id="step3">
+      <div class="step-num">3</div>Instrumentos
+    </div>
+    <div class="step" onclick="goStep(4)" id="step4">
+      <div class="step-num">4</div>Escores
+    </div>
+    <div class="step" onclick="goStep(5)" id="step5">
+      <div class="step-num">5</div>Gerar Laudo
+    </div>
+  </div>
+
+  <div class="phase active" id="phase1">
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon">👤</div>
+        <div><div class="card-title">Identificação do Paciente</div>
+        <div class="card-sub">Dados cadastrais e da avaliação</div></div>
+      </div>
+      <div class="grid-2">
+        <div class="field"><label>Nome Completo *</label><input id="pac_nome" placeholder="Nome completo do paciente"></div>
+        <div class="field"><label>Data de Nascimento *</label><input id="pac_nasc" type="date"></div>
+        <div class="field"><label>Sexo</label>
+          <select id="pac_sexo"><option value="Masculino">Masculino</option><option value="Feminino">Feminino</option><option value="Outro">Outro</option></select>
+        </div>
+        <div class="field"><label>Lateralidade</label>
+          <select id="pac_lat"><option>Destro</option><option>Sinistro</option><option>Ambidestro</option></select>
+        </div>
+        <div class="field"><label>CPF</label><input id="pac_cpf" placeholder="000.000.000-00"></div>
+        <div class="field"><label>Natural de</label><input id="pac_natural" placeholder="Cidade - UF"></div>
+        <div class="field"><label>Nome da Mãe</label><input id="pac_mae" placeholder="Nome completo"></div>
+        <div class="field"><label>Nome do Pai</label><input id="pac_pai" placeholder="Nome completo"></div>
+        <div class="field"><label>Escolaridade</label>
+          <select id="pac_escola">
+            <option>Educação Infantil</option><option>1º ao 5º ano EF</option>
+            <option>6º ao 9º ano EF</option><option>Ensino Médio</option>
+            <option>Ensino Superior</option><option>Pós-Graduação</option><option>Analfabeto</option>
+          </select>
+        </div>
+        <div class="field"><label>Série/Ano Atual</label><input id="pac_serie" placeholder="Ex: 9º ano EF"></div>
+      </div>
+
+      <hr class="section-divider">
+
+      <div class="card-header" style="margin-top:8px">
+        <div class="card-icon">🏥</div>
+        <div><div class="card-title">Identificação Profissional</div></div>
+      </div>
+      <div class="grid-2">
+        <div class="field"><label>Nome do Psicólogo *</label><input id="psi_nome" placeholder="Nome completo"></div>
+        <div class="field"><label>CRP</label><input id="psi_crp" placeholder="04/00000"></div>
+        <div class="field"><label>Especialização</label><input id="psi_espec" placeholder="Ex: Neuropsicólogo, ABA"></div>
+        <div class="field"><label>Profissional Solicitante</label><input id="sol_nome" placeholder="Dr. Nome - CRM 00000"></div>
+        <div class="field"><label>Finalidade / Hipóteses CID-11 *</label><input id="finalidade" placeholder="Ex: TDAH (6A05), TEA (6A02)"></div>
+        <div class="field"><label>Data da Avaliação</label><input id="data_aval" type="date"></div>
+      </div>
     </div>
 
-    <div class="phase active" id="phase1">
-        <div class="card">
-            <div class="ch"><div class="ch-ico">👤</div><div><div class="ch-t">Identificação do Paciente</div><div class="ch-s">Dados cadastrais</div></div></div>
-            <div class="g2">
-                <div class="fld"><label>Nome Completo *</label><input id="pac_nome" placeholder="Nome completo"></div>
-                <div class="fld"><label>Data de Nascimento *</label><input id="pac_nasc" type="date"></div>
-                <div class="fld"><label>Sexo</label><select id="pac_sexo"><option>Masculino</option><option>Feminino</option><option>Outro</option></select></div>
-                <div class="fld"><label>Lateralidade</label><select id="pac_lat"><option>Destro</option><option>Sinistro</option><option>Ambidestro</option></select></div>
-                <div class="fld"><label>CPF</label><input id="pac_cpf" placeholder="000.000.000-00"></div>
-                <div class="fld"><label>Natural de</label><input id="pac_natural" placeholder="Cidade - UF"></div>
-                <div class="fld"><label>Nome da Mãe</label><input id="pac_mae"></div>
-                <div class="fld"><label>Nome do Pai</label><input id="pac_pai"></div>
-                <div class="fld"><label>Escolaridade</label>
-                    <select id="pac_escola"><option>Educação Infantil</option><option>1º ao 5º ano EF</option><option>6º ao 9º ano EF</option><option>Ensino Médio</option><option>Ensino Superior</option><option>Pós-Graduação</option></select>
-                </div>
-                <div class="fld"><label>Série / Ano Atual</label><input id="pac_serie" placeholder="Ex: 9º ano EF"></div>
-            </div>
-            <hr class="divider">
-            <div class="ch" style="margin-top:8px"><div class="ch-ico">🏥</div><div><div class="ch-t">Identificação Profissional</div></div></div>
-            <div class="g2">
-                <div class="fld"><label>Nome do Psicólogo *</label><input id="psi_nome"></div>
-                <div class="fld"><label>CRP</label><input id="psi_crp" placeholder="04/00000"></div>
-                <div class="fld"><label>Especialização</label><input id="psi_espec" placeholder="Ex: Neuropsicólogo, ABA"></div>
-                <div class="fld"><label>Profissional Solicitante</label><input id="sol_nome" placeholder="Dr. Nome — CRM 00000"></div>
-                <div class="fld"><label>Finalidade / Hipóteses CID-11 *</label><input id="finalidade" placeholder="Ex: TDAH (6A05), TEA (6A02)"></div>
-                <div class="fld"><label>Data da Avaliação</label><input id="data_aval" type="date"></div>
-            </div>
+    <div class="actions">
+      <button class="btn-primary" onclick="goStep(2)">Próximo: Anamnese →</button>
+    </div>
+  </div>
+
+  <div class="phase" id="phase2">
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon">📋</div>
+        <div><div class="card-title">Entrevista de Anamnese</div>
+        <div class="card-sub">Informações clínicas e de desenvolvimento</div></div>
+      </div>
+
+      <div class="field" style="margin-bottom:16px">
+        <label>Descrição da Demanda / Queixas Principais *</label>
+        <textarea id="ana_demanda" rows="4" placeholder="Descreva as queixas principais relatadas pelo paciente e/ou responsável. O que motivou a avaliação? Quando surgiram as dificuldades?"></textarea>
+      </div>
+
+      <div class="grid-2" style="margin-bottom:16px">
+        <div class="field">
+          <label>Histórico Pré-natal e Perinatal</label>
+          <textarea id="ana_prenatal" rows="3" placeholder="Intercorrências na gestação, uso de substâncias, dados de nascimento (semanas, peso, Apgar)..."></textarea>
         </div>
-        <div class="acts"><button class="btn-p" onclick="goStep(2)">Próximo: Anamnese →</button></div>
+        <div class="field">
+          <label>Histórico do Neurodesenvolvimento</label>
+          <textarea id="ana_neurodev" rows="3" placeholder="Marcos motores, linguagem, enurese, temperamento, comportamentos na infância..."></textarea>
+        </div>
+        <div class="field">
+          <label>Histórico Escolar</label>
+          <textarea id="ana_escolar" rows="3" placeholder="Processo de alfabetização, dificuldades em matérias, reprovações, necessidade de reforço, interação social na escola..."></textarea>
+        </div>
+        <div class="field">
+          <label>Histórico de Intervenções e Tratamentos</label>
+          <textarea id="ana_tratamentos" rows="3" placeholder="Psicoterapia, fonoaudiologia, psicopedagogia, medicações em uso ou anteriores, diagnósticos prévios..."></textarea>
+        </div>
+      </div>
+
+      <div class="field" style="margin-bottom:16px">
+        <label>Perfil Sensorial e Comportamentos Relevantes</label>
+        <textarea id="ana_sensorial" rows="3" placeholder="Hipersensibilidades, seletividade alimentar, comportamentos repetitivos, interesses restritos, rotinas, padrão de sono..."></textarea>
+      </div>
+
+      <div class="field">
+        <label>Relatório Escolar / Observações da Escola</label>
+        <textarea id="ana_escola_relat" rows="3" placeholder="Cole aqui informações do relatório escolar ou observações da instituição sobre o aluno..."></textarea>
+      </div>
+
+      <div class="obs-note">⚠️ Quanto mais detalhes você inserir na anamnese, mais rica e precisa será a interpretação clínica do laudo.</div>
     </div>
 
-    <div class="phase" id="phase2">
-        <div class="card">
-            <div class="ch"><div class="ch-ico">📋</div><div><div class="ch-t">Entrevista de Anamnese</div><div class="ch-s">Informações clínicas e de desenvolvimento</div></div></div>
-            <div class="fld" style="margin-bottom:14px"><label>Descrição da Demanda / Queixas Principais *</label>
-                <textarea id="ana_demanda" rows="4" placeholder="Queixas relatadas, quando surgiram, impacto funcional..."></textarea></div>
-            <div class="g2" style="margin-bottom:14px">
-                <div class="fld"><label>Histórico Pré-Natal e Perinatal</label><textarea id="ana_prenatal" rows="3" placeholder="Intercorrências, uso de substâncias, dados de nascimento..."></textarea></div>
-                <div class="fld"><label>Histórico do Neurodesenvolvimento</label><textarea id="ana_neurodev" rows="3" placeholder="Marcos motores, linguagem, enurese, temperamento..."></textarea></div>
-                <div class="fld"><label>Histórico Escolar</label><textarea id="ana_escolar" rows="3" placeholder="Alfabetização, dificuldades, reprovações, reforço..."></textarea></div>
-                <div class="fld"><label>Histórico de Intervenções e Tratamentos</label><textarea id="ana_tratamentos" rows="3" placeholder="Terapias, medicações, diagnósticos prévios..."></textarea></div>
-            </div>
-            <div class="fld" style="margin-bottom:14px"><label>Perfil Sensorial e Comportamentos</label>
-                <textarea id="ana_sensorial" rows="3" placeholder="Hipersensibilidades, seletividade alimentar, comportamentos repetitivos, sono..."></textarea></div>
-            <div class="fld"><label>Relatório Escolar</label>
-                <textarea id="ana_escola_relat" rows="3" placeholder="Cole aqui o relatório escolar ou observações da instituição..."></textarea></div>
-            <div class="note">⚠️ Quanto mais detalhes na anamnese, mais rica será a interpretação clínica do laudo.</div>
+    <div class="actions">
+      <button class="btn-secondary" onclick="goStep(1)">← Voltar</button>
+      <button class="btn-primary" onclick="goStep(3)">Próximo: Instrumentos →</button>
+    </div>
+  </div>
+
+  <div class="phase" id="phase3">
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon">🧰</div>
+        <div><div class="card-title">Seleção de Instrumentos Aplicados</div>
+        <div class="card-sub">Marque os testes realizados nesta avaliação</div></div>
+      </div>
+
+      <div class="grid-2">
+        <div>
+          <p style="font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.6px;margin-bottom:10px;">🧠 Inteligência</p>
+          <label class="instr-check"><input type="checkbox" value="WISC-IV"> WISC-IV — Inteligência (6-16a)</label>
+          <label class="instr-check"><input type="checkbox" value="WAIS-III"> WAIS-III — Inteligência Global (≥16a)</label>
+          <label class="instr-check"><input type="checkbox" value="BETA-III"> BETA-III — Inteligência Não-Verbal</label>
+          <label class="instr-check"><input type="checkbox" value="CPM-RAVEN"> CPM-RAVEN — Inteligência Não-Verbal</label>
+          <label class="instr-check"><input type="checkbox" value="SON-R"> SON-R 6-40 — Inteligência Não-Verbal</label>
+          <label class="instr-check"><input type="checkbox" value="WMT-2"> WMT-2 (Matrizes de Viena)</label>
+          <label class="instr-check"><input type="checkbox" value="TIAH/S"> TIAH/S — Inteligência e Habilidades Sociais</label>
+
+          <p style="font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.6px;margin:16px 0 10px;">👁️ Atenção</p>
+          <label class="instr-check"><input type="checkbox" value="BPA-2"> BPA-2 — Atenção Geral</label>
+          <label class="instr-check"><input type="checkbox" value="TAVIS-4"> TAVIS-4 — Atenção Visual</label>
+          <label class="instr-check"><input type="checkbox" value="TESTE D2-R"> Teste D2-R — Atenção Concentrada</label>
+          <label class="instr-check"><input type="checkbox" value="TEACO/TEADI/TEALT"> TEACO/TEADI/TEALT — Atenção</label>
+
+          <p style="font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.6px;margin:16px 0 10px;">🔄 Funções Executivas</p>
+          <label class="instr-check"><input type="checkbox" value="FDT"> FDT — Cinco Dígitos (Flexibilidade)</label>
+          <label class="instr-check"><input type="checkbox" value="TORRE DE LONDRES"> Torre de Londres</label>
+          <label class="instr-check"><input type="checkbox" value="BDEFS"> BDEFS — Déficits Executivos (≥18a)</label>
+
+          <p style="font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.6px;margin:16px 0 10px;">🧩 Memória</p>
+          <label class="instr-check"><input type="checkbox" value="RAVLT"> RAVLT — Memória Auditivo-Verbal</label>
+          <label class="instr-check"><input type="checkbox" value="TEPIC-M-2"> TEPIC-M-2 — Memória Visual</label>
+          <label class="instr-check"><input type="checkbox" value="TIME-R"> TIME-R — Memória CP (3-6a)</label>
         </div>
-        <div class="acts">
-            <button class="btn-s" onclick="goStep(1)">← Voltar</button>
-            <button class="btn-p" onclick="goStep(3)">Próximo: Instrumentos →</button>
+        <div>
+          <p style="font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.6px;margin-bottom:10px;">📖 Leitura, Escrita e Aprendizagem</p>
+          <label class="instr-check"><input type="checkbox" value="TDE-II"> TDE-II — Desempenho Escolar</label>
+          <label class="instr-check"><input type="checkbox" value="PROLEC"> PROLEC — Processos de Leitura (2º-5º)</label>
+          <label class="instr-check"><input type="checkbox" value="PROLEC-SE-R"> PROLEC-SE-R — Leitura (6º-Médio)</label>
+          <label class="instr-check"><input type="checkbox" value="ANELE Vol. 4 (TLPP)"> ANELE Vol. 4 (TLPP) — Leitura PP</label>
+          <label class="instr-check"><input type="checkbox" value="ANELE Vol. 3 (TEPPE)"> ANELE Vol. 3 (TEPPE) — Escrita PP</label>
+          <label class="instr-check"><input type="checkbox" value="ANELE Vol. 1 (PCFO)"> ANELE Vol. 1 (PCFO) — Consciência Fon.</label>
+          <label class="instr-check"><input type="checkbox" value="ANELE Vol. 2 (T-NAR)"> ANELE Vol. 2 (T-NAR) — Nomeação Rápida</label>
+          <label class="instr-check"><input type="checkbox" value="TISD"> TISD — Sinais de Dislexia</label>
+
+          <p style="font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.6px;margin:16px 0 10px;">⚡ TDAH</p>
+          <label class="instr-check"><input type="checkbox" value="SNAP-IV"> SNAP-IV — Sintomas TDAH/TOD</label>
+          <label class="instr-check"><input type="checkbox" value="ETDAH-AD"> ETDAH-AD — TDAH Autoavaliação</label>
+          <label class="instr-check"><input type="checkbox" value="ETDAH-PAIS"> ETDAH-PAIS — TDAH (Pais)</label>
+          <label class="instr-check"><input type="checkbox" value="ASRS-18"> ASRS-18 — TDAH (OMS, ≥18a)</label>
+          <label class="instr-check"><input type="checkbox" value="BAARS-IV"> BAARS-IV — TDAH Barkley (≥18a)</label>
+
+          <p style="font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.6px;margin:16px 0 10px;">🔵 TEA / Autismo</p>
+          <label class="instr-check"><input type="checkbox" value="SRS-2"> SRS-2 — Responsividade Social</label>
+          <label class="instr-check"><input type="checkbox" value="RAADS-R-BR"> RAADS-R-BR Screen</label>
+          <label class="instr-check"><input type="checkbox" value="ATA"> ATA — Traços Autísticos</label>
+          <label class="instr-check"><input type="checkbox" value="AQ-Adolescente"> AQ-Adolescente / QA16+</label>
+          <label class="instr-check"><input type="checkbox" value="ASSQ"> ASSQ — Rastreio TEA (7-16a)</label>
+          <label class="instr-check"><input type="checkbox" value="M-CHAT"> M-CHAT — Rastreio TEA (18-24m)</label>
+          <label class="instr-check"><input type="checkbox" value="CAT-Q"> CAT-Q — Camuflagem Autística</label>
+          <label class="instr-check"><input type="checkbox" value="ADOS-2"> ADOS-2 — Avaliação Diagnóstica TEA</label>
+
+          <p style="font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.6px;margin:16px 0 10px;">😰 Ansiedade / Humor / Personalidade</p>
+          <label class="instr-check"><input type="checkbox" value="SCARED AUTO"> SCARED Auto — Ansiedade</label>
+          <label class="instr-check"><input type="checkbox" value="SCARED HETERO"> SCARED Hetero — Ansiedade</label>
+          <label class="instr-check"><input type="checkbox" value="BAI"> BAI — Ansiedade (Beck)</label>
+          <label class="instr-check"><input type="checkbox" value="BDI-II"> BDI-II — Depressão (Beck)</label>
+          <label class="instr-check"><input type="checkbox" value="VINELAND-3"> VINELAND-3 — Comportamento Adaptativo</label>
+          <label class="instr-check"><input type="checkbox" value="PERFIL SENSORIAL 2"> Perfil Sensorial 2</label>
+          <label class="instr-check"><input type="checkbox" value="IHS-2"> IHS-2 — Habilidades Sociais</label>
+          <label class="instr-check"><input type="checkbox" value="BFP"> BFP — Personalidade</label>
         </div>
+      </div>
     </div>
 
-    <div class="phase" id="phase3">
-        <div class="card">
-            <div class="ch"><div class="ch-ico">🧰</div><div><div class="ch-t">Seleção de Instrumentos Aplicados</div><div class="ch-s">Marque os testes realizados nesta avaliação</div></div></div>
-            <div class="g2" id="instruments-list"></div>
-            <div id="instr-summary" style="margin-top:14px;padding:10px 14px;background:var(--teal-p);border-radius:10px;font-size:12px;color:var(--teal);display:none;"></div>
-        </div>
-        <div class="acts">
-            <button class="btn-s" onclick="goStep(2)">← Voltar</button>
-            <button class="btn-p" onclick="goStep(4)">Próximo: Inserir Escores →</button>
-        </div>
+    <div class="actions">
+      <button class="btn-secondary" onclick="goStep(2)">← Voltar</button>
+      <button class="btn-primary" onclick="goStep(4)">Próximo: Inserir Escores →</button>
+    </div>
+  </div>
+
+  <div class="phase" id="phase4">
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon">📊</div>
+        <div><div class="card-title">Inserção de Escores</div>
+        <div class="card-sub">Preencha os resultados obtidos em cada instrumento selecionado</div></div>
+      </div>
+
+      <div id="scores-container">
+        <p style="color:var(--muted);font-style:italic;font-size:14px;">Os formulários de escores dos instrumentos selecionados aparecerão aqui.</p>
+      </div>
+
+      <div class="field" style="margin-top:20px">
+        <label>Observações Comportamentais da Sessão</label>
+        <textarea id="obs_sessao" rows="4" placeholder="Descreva o comportamento do paciente durante a avaliação: nível de colaboração, atenção, ansiedade, necessidade de pausas, uso de estratégias, comunicação verbal, linguagem corporal..."></textarea>
+      </div>
     </div>
 
-    <div class="phase" id="phase4">
-        <div class="card">
-            <div class="ch"><div class="ch-ico">📊</div><div><div class="ch-t">Inserção de Escores</div><div class="ch-s">Preencha os resultados de cada instrumento selecionado</div></div></div>
-            <div id="scores-container"><p style="color:var(--muted);font-size:14px;">Selecione instrumentos na etapa anterior.</p></div>
-            <div class="fld" style="margin-top:16px">
-                <label>Observações Comportamentais da Sessão</label>
-                <textarea id="obs_sessao" rows="4" placeholder="Comportamento durante a avaliação: colaboração, atenção, ansiedade, uso de estratégias..."></textarea>
-            </div>
+    <div class="actions">
+      <button class="btn-secondary" onclick="goStep(3)">← Voltar</button>
+      <button class="btn-primary" onclick="goStep(5)">Próximo: Gerar Laudo →</button>
+    </div>
+  </div>
+
+  <div class="phase" id="phase5">
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-icon">📄</div>
+        <div><div class="card-title">Gerar Laudo Neuropsicológico</div>
+        <div class="card-sub">A IA irá redigir o laudo completo no padrão Equilibrium</div></div>
+      </div>
+
+      <div class="grid-2" style="margin-bottom:20px">
+        <div class="field">
+          <label>Tom do Laudo</label>
+          <select id="opt_tom">
+            <option value="clinico">Clínico-Técnico (padrão CFP)</option>
+            <option value="didatico">Didático (para família)</option>
+            <option value="pericial">Pericial / Judicial</option>
+          </select>
         </div>
-        <div class="acts">
-            <button class="btn-s" onclick="goStep(3)">← Voltar</button>
-            <button class="btn-p" onclick="goStep(5)">Próximo: Gerar Laudo →</button>
+        <div class="field">
+          <label>Seções a incluir</label>
+          <select id="opt_secoes">
+            <option value="completo">Laudo completo</option>
+            <option value="sem_ref">Sem referências bibliográficas</option>
+            <option value="so_conclusao">Somente Conclusão + Hipóteses</option>
+          </select>
         </div>
+      </div>
+
+      <div style="text-align:center;padding:10px 0">
+        <button class="btn-primary" id="btn-gerar" onclick="gerarLaudo()" style="font-size:16px;padding:15px 40px;">
+          ✨ Gerar Laudo Completo
+        </button>
+      </div>
     </div>
 
-    <div class="phase" id="phase5">
-        <div class="card">
-            <div class="ch"><div class="ch-ico">📄</div><div><div class="ch-t">Gerar Laudo Neuropsicológico</div><div class="ch-s">A IA redigirá o laudo completo no padrão Equilibrium</div></div></div>
-
-            <div class="key-box" id="key-box">
-                <div class="ch-ico">🔑</div>
-                <div class="fld">
-                        <label>Chave de API OpenAI (GPT-4)</label>
-                        <input type="password" id="api_key" placeholder="sk-...">
-                    <div class="key-status" id="key-status">Necessária para gerar o laudo. Obtida em console.anthropic.com → API Keys.</div>
-                </div>
-                <button class="btn-s" onclick="salvarKey()" style="white-space:nowrap">💾 Salvar</button>
-            </div>
-
-            <div class="g2" style="margin-bottom:20px">
-                <div class="fld"><label>Tom do Laudo</label>
-                    <select id="opt_tom">
-                        <option value="clinico">Clínico-Técnico (padrão CFP)</option>
-                        <option value="didatico">Didático (para família / escola)</option>
-                        <option value="pericial">Pericial / Judicial</option>
-                    </select>
-                </div>
-                <div class="fld"><label>Seções a incluir</label>
-                    <select id="opt_secoes">
-                        <option value="completo">Laudo completo</option>
-                        <option value="sem_ref">Sem referências bibliográficas</option>
-                        <option value="so_conclusao">Somente Conclusão + Hipóteses</option>
-                    </select>
-                </div>
-            </div>
-
-            <div style="text-align:center">
-                <button class="btn-p" id="btn-gerar" onclick="gerarLaudo()">✨ Gerar Laudo Completo</button>
-            </div>
+    <div id="output-area" style="display:none">
+      <div class="output-header">
+        <div>
+          <div class="card-title" style="font-family:'DM Serif Display',serif;font-size:20px;color:var(--blue)">Laudo Gerado</div>
+          <span class="info-chip">✅ Revise antes de finalizar</span>
         </div>
-
-        <div id="output-area" class="hidden">
-            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:10px">
-                <div>
-                    <div style="font-family:'DM Serif Display',serif;font-size:20px;color:var(--blue)">Laudo Gerado</div>
-                    <span class="chip">✅ Revise antes de finalizar</span>
-                </div>
-                <div style="display:flex;gap:9px;flex-wrap:wrap">
-                    <button class="btn-s" onclick="copiarLaudo()">📋 Copiar</button>
-                    <button class="btn-s" onclick="window.print()">🖨️ Imprimir</button>
-                </div>
-            </div>
-            <div id="laudo-output" class="out"></div>
-            <div class="note" style="margin-top:14px">⚕️ <strong>Lembrete ético:</strong> Este laudo é gerado por IA como apoio à redação. O profissional deve revisar, validar clinicamente e assinar conforme Resoluções CFP.</div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <button class="btn-secondary" onclick="copiarLaudo()">📋 Copiar Texto</button>
+          <button class="btn-secondary" onclick="window.print()">🖨️ Imprimir</button>
         </div>
-
-        <div class="acts" style="margin-top:20px">
-            <button class="btn-s" onclick="goStep(4)">← Voltar</button>
-        </div>
+      </div>
+      <div id="laudo-output"></div>
+      <div class="obs-note" style="margin-top:16px">
+        ⚕️ <strong>Lembrete ético:</strong> Este laudo é gerado por IA como apoio à redação. O profissional responsável deve revisar, validar clinicamente e assinar o documento final conforme as Resoluções CFP 06/2019, 01/2009 e 31/2022.
+      </div>
     </div>
 
-</div>
+    <div class="actions" style="margin-top:20px">
+      <button class="btn-secondary" onclick="goStep(4)">← Voltar</button>
+    </div>
+  </div>
 
-<script src="script.js"></script>
+</div><script src="script.js"></script>
 </body>
 </html>
