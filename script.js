@@ -111,38 +111,59 @@ function renderTemplate(inst, tmpl) {
 
 // GERADOR DE LAUDO (API)
 async function gerarLaudo() {
+    // Agora pegamos a chave da OpenAI (que começa com sk-...)
     const apiKey = document.getElementById('api_key').value.trim();
-    if (!apiKey) { alert('Insira a chave da API.'); return; }
+    if (!apiKey) { 
+        alert('Por favor, insira sua OpenAI API Key.'); 
+        return; 
+    }
 
     const btn = document.getElementById('btn-gerar');
     const outputArea = document.getElementById('output-area');
     const laudoEl = document.getElementById('laudo-output');
 
     btn.disabled = true;
-    btn.textContent = '⏳ Gerando...';
+    btn.textContent = '⏳ Inteligência Artificial redigindo...';
     outputArea.classList.remove('hidden');
-    laudoEl.innerHTML = 'A IA está redigindo o laudo...';
+    laudoEl.innerHTML = '<div class="loading-msg"><span class="spin"></span> Processando anamnese e escores...</div>';
+
+    // Pega o texto estruturado que você já tem no código original
+    const promptParaIA = buildPrompt(); 
 
     try {
-        const response = await fetch('https://api.anthropic.com/v1/messages', {
+        const response = await fetch('https://api.openai.com/v1/chat/completions', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'x-api-key': apiKey,
-                'anthropic-version': '2023-06-01',
-                'anthropic-dangerous-direct-browser-access': 'true'
+                'Authorization': `Bearer ${apiKey}`
             },
             body: JSON.stringify({
-                model: 'claude-3-sonnet-20240229',
-                max_tokens: 4000,
-                messages: [{ role: 'user', content: "Gere um laudo com base nos dados fornecidos..." }] // Aqui vai a lógica do prompt
+                model: 'gpt-4o', // O modelo mais inteligente e atual da OpenAI
+                messages: [
+                    { 
+                        role: 'system', 
+                        content: 'Você é um neuropsicólogo sênior da Equilibrium. Sua tarefa é redigir laudos clínicos humanos, detalhados e tecnicamente impecáveis.' 
+                    },
+                    { 
+                        role: 'user', 
+                        content: promptParaIA 
+                    }
+                ],
+                temperature: 0.7 // Mantém o equilíbrio entre criatividade e rigor técnico
             })
         });
 
         const data = await response.json();
-        laudoEl.textContent = data.content[0].text;
-    } catch(e) {
-        laudoEl.textContent = "Erro: " + e.message;
+
+        if (data.error) {
+            throw new Error(data.error.message);
+        }
+
+        const textoGerado = data.choices[0].message.content;
+        laudoEl.textContent = textoGerado;
+
+    } catch (e) {
+        laudoEl.innerHTML = `<span style="color:var(--warn)">⚠️ Erro na API OpenAI: ${e.message}</span>`;
     } finally {
         btn.disabled = false;
         btn.textContent = '✨ Gerar Laudo Completo';
