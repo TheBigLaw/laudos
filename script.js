@@ -28,7 +28,7 @@ const SCORE_TEMPLATES = {
     fields: [
       { key: "rac_mat", label: "Raciocínio Matricial", cols: ["PB", "Percentil", "Classificação"] },
       { key: "codigos", label: "Subteste Códigos", cols: ["PB", "Percentil", "Classificação"] },
-    ] 
+    ]
   },
   "BPA-2": {
     title: "BPA-2 — Bateria Psicológica para Avaliação da Atenção",
@@ -246,4 +246,257 @@ function buildScoresForms() {
         <div class="test-header" onclick="toggleTest(this)">
           <div class="test-header-left">
             <span class="test-badge">Escores</span>
-            <div><div class="
+            <div><div class="test-name">${tmpl.title}</div></div>
+          </div>
+          <span class="toggle-icon">▾</span>
+        </div>
+        <div class="test-body open">
+          <div class="score-row" style="padding-bottom:6px;border-bottom:2px solid var(--teal-pale)">
+            <span class="score-head" style="text-align:left">Subteste / Índice</span>
+            <span class="score-head">${tmpl.fields[0].cols[0]}</span>
+            <span class="score-head">${tmpl.fields[0].cols[1]}</span>
+            <span class="score-head">${tmpl.fields[0].cols[2]}</span>
+          </div>
+          ${rows}
+          <div class="field" style="margin-top:12px">
+            <label>Observações adicionais (${key})</label>
+            <textarea data-inst="${key}" data-field="obs" rows="2" placeholder="Síntese clínica, padrões observados, pontos relevantes..."></textarea>
+          </div>
+        </div>
+      </div>`;
+  });
+}
+
+function toggleTest(header) {
+  const body = header.nextElementSibling;
+  const icon = header.querySelector('.toggle-icon');
+  body.classList.toggle('open');
+  icon.textContent = body.classList.contains('open') ? '▾' : '▸';
+}
+
+// ── COLLECT DATA ──────────────────────────────────────────
+function collectData() {
+  const pac = {
+    nome: v('pac_nome'), nasc: v('pac_nasc'), sexo: v('pac_sexo'),
+    lat: v('pac_lat'), cpf: v('pac_cpf'), natural: v('pac_natural'),
+    mae: v('pac_mae'), pai: v('pac_pai'), escola: v('pac_escola'),
+    serie: v('pac_serie'),
+  };
+  const psi = {
+    nome: v('psi_nome'), crp: v('psi_crp'), espec: v('psi_espec'),
+    sol: v('sol_nome'), finalidade: v('finalidade'), data: v('data_aval'),
+  };
+  const ana = {
+    demanda: v('ana_demanda'), prenatal: v('ana_prenatal'),
+    neurodev: v('ana_neurodev'), escolar: v('ana_escolar'),
+    tratamentos: v('ana_tratamentos'), sensorial: v('ana_sensorial'),
+    escola_relat: v('ana_escola_relat'),
+  };
+
+  // Scores
+  const instruments = {};
+  document.querySelectorAll('[data-inst]').forEach(el => {
+    const inst = el.getAttribute('data-inst');
+    const field = el.getAttribute('data-field') || 'texto_livre';
+    if (!instruments[inst]) instruments[inst] = {};
+    instruments[inst][field] = el.value.trim();
+  });
+
+  const obs = v('obs_sessao');
+  const tom = v('opt_tom');
+  const secoes = v('opt_secoes');
+
+  return { pac, psi, ana, instruments, obs, tom, secoes };
+}
+
+function v(id) { const el = document.getElementById(id); return el ? el.value.trim() : ''; }
+
+// ── GENERATE REPORT ──────────────────────────────────────────
+async function gerarLaudo() {
+  const btn = document.getElementById('btn-gerar');
+  const outputArea = document.getElementById('output-area');
+  const laudoEl = document.getElementById('laudo-output');
+
+  btn.disabled = true; btn.textContent = '⏳ Gerando laudo...';
+  outputArea.style.display = 'block';
+  laudoEl.className = 'loading';
+  laudoEl.innerHTML = '<div class="spinner"></div> A IA está redigindo o laudo clínico...';
+  window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+
+  const data = collectData();
+  const prompt = buildPrompt(data);
+
+  try {
+    const response = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "claude-sonnet-4-20250514",
+        max_tokens: 8000,
+        system: "Você é um neuropsicólogo especialista com domínio completo das normas do CFP (Resoluções 06/2019, 01/2009 e 31/2022). Redija laudos neuropsicológicos completos, profissionais e tecnicamente precisos. Nunca invente escores. Faça integração real dos dados clínicos. Use linguagem clínica precisa e contextualizada.",
+        messages: [{ role: "user", content: prompt }]
+      })
+    });
+
+    if (!response.ok) {
+      const err = await response.json().catch(() => ({}));
+      throw new Error(err?.error?.message || `HTTP ${response.status}`);
+    }
+
+    const result = await response.json();
+    const text = result.content?.map(c => c.text || '').join('') || 'Erro ao gerar laudo.';
+    laudoEl.className = '';
+    laudoEl.textContent = text;
+  } catch(e) {
+    laudoEl.className = '';
+    laudoEl.innerHTML = `<span style="color:var(--warn)">⚠️ Erro ao gerar laudo: ${e.message}<br><br>Verifique sua conexão e tente novamente.</span>`;
+  }
+
+  btn.disabled = false; btn.textContent = '✨ Gerar Laudo Completo';
+}
+
+function buildPrompt(d) {
+  const { pac, psi, ana, instruments, obs, tom, secoes } = d;
+
+  // Calcula idade
+  let idadeStr = '';
+  if (pac.nasc) {
+    const nasc = new Date(pac.nasc);
+    const hoje = new Date();
+    const anos = hoje.getFullYear() - nasc.getFullYear();
+    const meses = hoje.getMonth() - nasc.getMonth();
+    idadeStr = `${anos} anos e ${((meses + 12) % 12)} meses`;
+  }
+
+  // Monta escores em texto estruturado
+  let escoresText = '';
+  for (const [inst, fields] of Object.entries(instruments)) {
+    if (Object.values(fields).some(v => v)) {
+      escoresText += `\n\n### ${inst}\n`;
+      for (const [fk, fv] of Object.entries(fields)) {
+        if (fv) escoresText += `- ${fk}: ${fv}\n`;
+      }
+    }
+  }
+
+  const tomDesc = tom === 'clinico' ? 'técnico-clínico, com linguagem científica conforme padrão CFP'
+    : tom === 'didatico' ? 'acessível e didático, para ser compreendido por familiares e escola, mas mantendo precisão clínica'
+    : 'formal e pericial, com linguagem objetiva para uso judicial ou médico';
+
+  return `Você é um neuropsicólogo especialista com domínio completo das normas do CFP (Resoluções 06/2019, 01/2009 e 31/2022). Você irá redigir um laudo neuropsicológico COMPLETO, PROFISSIONAL e TECNICAMENTE PRECISO para a Clínica Equilibrium Med Center.
+
+O tom deve ser: ${tomDesc}.
+Seções a incluir: ${secoes === 'so_conclusao' ? 'APENAS Hipótese Diagnóstica e Conclusão' : secoes === 'sem_ref' ? 'Laudo completo exceto referências bibliográficas' : 'Laudo neuropsicológico completo com todas as seções'}.
+
+═══════════════════════════════════════
+DADOS DO CASO
+═══════════════════════════════════════
+
+PACIENTE:
+- Nome: ${pac.nome || '[não informado]'}
+- Data Nascimento: ${pac.nasc || '[não informada]'} (Idade: ${idadeStr || '[calcular]'})
+- Sexo: ${pac.sexo} | Lateralidade: ${pac.lat}
+- CPF: ${pac.cpf || '[não informado]'}
+- Natural de: ${pac.natural || '[não informado]'}
+- Mãe: ${pac.mae || '[não informada]'} | Pai: ${pac.pai || '[não informado]'}
+- Escolaridade: ${pac.escola} — ${pac.serie || '[série não informada]'}
+
+PROFISSIONAL RESPONSÁVEL:
+- Neuropsicólogo(a): ${psi.nome || '[não informado]'} — CRP: ${psi.crp || '[não informado]'}
+- Qualificações: ${psi.espec || '[não informadas]'}
+- Profissional Solicitante: ${psi.sol || '[não informado]'}
+- Finalidade / Hipóteses CID-11: ${psi.finalidade || '[não informadas]'}
+- Data da Avaliação: ${psi.data || '[não informada]'}
+
+═══════════════════════════════════════
+ANAMNESE
+═══════════════════════════════════════
+
+DESCRIÇÃO DA DEMANDA:
+${ana.demanda || '[não informada]'}
+
+HISTÓRICO PRÉ-NATAL E PERINATAL:
+${ana.prenatal || '[não informado]'}
+
+HISTÓRICO DO NEURODESENVOLVIMENTO:
+${ana.neurodev || '[não informado]'}
+
+HISTÓRICO ESCOLAR:
+${ana.escolar || '[não informado]'}
+
+HISTÓRICO DE INTERVENÇÕES E TRATAMENTOS:
+${ana.tratamentos || '[não informado]'}
+
+PERFIL SENSORIAL E COMPORTAMENTOS:
+${ana.sensorial || '[não informado]'}
+
+RELATÓRIO DA ESCOLA / OBSERVAÇÕES ESCOLARES:
+${ana.escola_relat || '[não informado]'}
+
+═══════════════════════════════════════
+INSTRUMENTOS E ESCORES OBTIDOS
+═══════════════════════════════════════
+${escoresText || '[Escores não informados — redija o laudo com base nas informações disponíveis]'}
+
+═══════════════════════════════════════
+OBSERVAÇÕES COMPORTAMENTAIS DA SESSÃO
+═══════════════════════════════════════
+${obs || '[não informadas]'}
+
+═══════════════════════════════════════
+INSTRUÇÕES PARA O LAUDO
+═══════════════════════════════════════
+
+Redija o laudo completo seguindo EXATAMENTE esta estrutura:
+
+1. REFERENCIAL TEÓRICO — breve embasamento sobre neuropsicologia e avaliação neuropsicológica (cite Malloy-Diniz, 2008; Lezak et al., 2004).
+
+2. IDENTIFICAÇÃO DO PACIENTE — apresente todos os dados cadastrais de forma organizada.
+
+3. IDENTIFICAÇÃO PROFISSIONAL — responsável técnico, solicitante e finalidade.
+
+4. ENTREVISTA DE ANAMNESE — com subseções:
+   - Descrição da Demanda (interpretação clínica das queixas, NÃO apenas transcrição)
+   - Histórico Pré-Natal e Perinatal
+   - Histórico do Neurodesenvolvimento
+   - Histórico Escolar
+   - Histórico de Intervenções e Tratamentos
+   - Perfil Sensorial e Comportamentos Relacionados
+
+5. RELATÓRIO ESCOLAR (se informado)
+
+6. PROCEDIMENTOS — liste os instrumentos utilizados com suas descrições técnicas.
+
+7. RESULTADOS — para CADA instrumento, apresente:
+   - Introdução explicando o que o teste avalia
+   - Tabela ou descrição estruturada dos escores obtidos
+   - Interpretação clínica detalhada dos resultados, com linguagem específica para cada domínio cognitivo
+   - Cruzamento com as queixas da anamnese quando relevante
+
+8. INTEGRAÇÃO DOS RESULTADOS — análise transversal que cruza todos os instrumentos, identificando padrões, discrepâncias e o perfil cognitivo global do paciente.
+
+9. HIPÓTESE DIAGNÓSTICA — liste as hipóteses com CID-11 de forma clara e fundamentada.
+
+10. CONCLUSÃO — síntese objetiva e clínica do perfil.
+
+11. ORIENTAÇÕES E ENCAMINHAMENTOS — plano de intervenção específico para o caso.
+
+${secoes !== 'sem_ref' ? '12. REFERÊNCIAS BIBLIOGRÁFICAS — liste todas as referências dos instrumentos utilizados.' : ''}
+
+REGRAS INVIOLÁVEIS:
+- Nunca invente escores. Se um escore não foi informado, omita ou mencione que não foi coletado.
+- Use linguagem clínica precisa. Evite termos genéricos como "apresenta dificuldades" sem contextualizar.
+- Faça integração real dos dados — o laudo deve contar uma história clínica coerente.
+- Mencione o nome do paciente ao longo do texto (não use "o paciente" apenas).
+- O laudo deve estar em conformidade com as Resoluções CFP 06/2019, 01/2009 e 31/2022.
+- Local e data ao final: Uberlândia, ${psi.data ? new Date(psi.data).toLocaleDateString('pt-BR', {day:'numeric',month:'long',year:'numeric'}) : 'data da avaliação'}.
+
+Comece diretamente com o laudo, sem introdução ou explicação prévia.`;
+}
+
+function copiarLaudo() {
+  const texto = document.getElementById('laudo-output').textContent;
+  navigator.clipboard.writeText(texto).then(() => {
+    alert('Laudo copiado para a área de transferência!');
+  });
+}
