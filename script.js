@@ -28,7 +28,7 @@ const SCORE_TEMPLATES = {
     fields: [
       { key: "rac_mat", label: "Raciocínio Matricial", cols: ["PB", "Percentil", "Classificação"] },
       { key: "codigos", label: "Subteste Códigos", cols: ["PB", "Percentil", "Classificação"] },
-    ]
+    ] 
   },
   "BPA-2": {
     title: "BPA-2 — Bateria Psicológica para Avaliação da Atenção",
